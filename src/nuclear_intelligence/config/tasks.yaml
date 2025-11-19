@@ -19,8 +19,16 @@ information_discovery:
     
     Prioritize source diversity to ensure coverage across different publication
     types and perspectives. Aim for at least 10-15 distinct, high-quality sources.
-    Use domain-specific search terms related to radiation safety, health physics,
-    dosimetry, ALARA, contamination control, and regulatory compliance.
+    Use domain-specific search terms covering the full breadth of the nuclear industry,
+    including: radiation safety and health physics; nuclear power plant operations and
+    maintenance; reactor design, technology, and innovation; nuclear fuel cycle and
+    materials management; radioactive waste management and disposal; nuclear security
+    and safeguards; decommissioning and remediation; advanced reactor concepts (SMRs,
+    Generation IV); nuclear medicine and industrial applications; fusion energy research;
+    environmental monitoring and impact assessment; emergency preparedness and response;
+    dosimetry and contamination control; ALARA implementation; regulatory compliance
+    and policy developments; international cooperation and standards; workforce
+    development and training; public engagement and communication.
   expected_output: >
     A structured list of at least 10-15 distinct sources, each containing:
     - Complete metadata (title, source, date, authors, URL)
@@ -68,40 +76,48 @@ content_analysis:
 
 content_synthesis:
   description: >
-    Transform the analyzed information into a coherent narrative that connects
-    individual developments, identifies themes and trends, and provides context
-    for understanding significance within the broader field of radiation safety.
-    
-    Organize content by thematic categories such as:
-    - Technology and instrumentation advances
-    - Regulatory developments and compliance
-    - Best practices and operational improvements
-    - Research findings and scientific advances
-    - Industry trends and market developments
-    
-    Within each theme, present developments chronologically where appropriate.
-    Contextualize developments within regulatory frameworks (NRC, IAEA) and
-    industry practices. Explain technical concepts clearly without oversimplification.
-    Highlight implications for different stakeholder groups (operators, regulators,
-    equipment manufacturers, researchers).
-    
-    Maintain technical accuracy while ensuring accessibility. Use clear headings
-    and transitions to guide navigation. Include appropriate technical detail with
-    explanatory context. Identify gaps in current knowledge or areas requiring
-    further investigation.
-    
-    Target audience: Technical professionals (health physicists, radiation safety
-    officers, regulatory personnel) with expertise in radiation protection.
+    Transform the analyzed information into a coherent, sophisticated narrative
+    that connects individual developments, identifies themes and trends, and
+    provides deep contextual understanding within the broader nuclear industry.
+
+    Organize content by thematic categories such as technology and instrumentation
+    advances, regulatory developments and compliance, operational improvements,
+    research findings and scientific advances, and industry trends and market
+    developments. Present all content in detailed narrative paragraphs, avoiding
+    any list formatting.
+
+    Within each theme, weave developments together chronologically where
+    appropriate, creating flowing prose that contextualizes developments within
+    regulatory frameworks (NRC, IAEA, international standards) and industry
+    practices. Explain technical concepts with appropriate depth and nuance,
+    avoiding oversimplification while maintaining clarity. Discuss implications
+    for different stakeholder groups through integrated analysis rather than
+    separate enumeration.
+
+    Maintain technical rigor and sophistication appropriate for nuclear industry
+    professionals. Use substantive paragraphs with sophisticated sentence
+    structures. Provide deep technical detail with rich explanatory context.
+    Identify gaps in current knowledge or areas requiring further investigation
+    through analytical discussion.
+
+    Target audience: Nuclear industry professionals including health physicists,
+    radiation safety officers, reactor operators, nuclear engineers, regulatory
+    personnel, and technical decision-makers with expertise in their respective
+    domains.
   expected_output: >
-    A comprehensive synthesis document organized into thematic sections, including:
-    - Clear introduction establishing context and significance
-    - Thematic sections with detailed discussions of key developments
-    - Connections drawn between related items
-    - Implications identified for different stakeholder groups
-    - Conclusions summarizing the state of the field and highlighting areas of
-      active development
-    
-    The synthesis should maintain technical accuracy while ensuring readability,
+    A comprehensive synthesis document written entirely in narrative prose,
+    organized into thematic sections. The document should open with a clear
+    introduction establishing context and significance through substantive
+    paragraphs. Thematic sections should present detailed discussions of key
+    developments in flowing narrative form, drawing connections between related
+    items through sophisticated analysis. Implications for different stakeholder
+    groups should be woven into the discussion rather than enumerated separately.
+    Conclusions should summarize the state of the field and highlight areas of
+    active development through rich, analytical paragraphs.
+
+    The synthesis must be written in sophisticated, technically rigorous prose
+    without any bullet points, numbered lists, or em dashes. Maintain technical
+    accuracy while ensuring readability through well-crafted narrative paragraphs,
     with citations linking assertions to source materials.
   agent: synthesis_agent
   context:
@@ -114,29 +130,43 @@ report_generation:
     appropriate heading hierarchy. Format citations according to standard
     practices, ensuring all claims are properly attributed with accessible
     references for verification.
-    
-    Create clear section breaks and transitions. Ensure appropriate paragraph
-    length and information density. Highlight key findings or recommendations
-    where appropriate. Generate an executive summary or abstract that captures
-    key findings for readers who need a quick overview.
-    
+
+    CRITICAL WRITING STYLE REQUIREMENTS:
+    - Use detailed narrative prose throughout the entire report
+    - NEVER use bullet points, numbered lists, or any list formatting
+    - NEVER use em dashes (—) in the text
+    - Write in flowing, substantive paragraphs that provide deep analysis
+    - Avoid overly simplistic language; write for technical professionals
+    - Connect ideas through transitional sentences rather than lists
+    - Integrate multiple points within cohesive paragraphs
+    - Use sophisticated sentence structures and varied paragraph lengths
+    - Provide contextual depth and nuanced analysis in all sections
+
+    Create clear section breaks and transitions using prose, not lists.
+    Ensure paragraphs are substantial and information-rich, presenting
+    detailed analysis rather than surface-level summaries. Generate an
+    executive summary or abstract that captures key findings in narrative
+    form for readers who need a quick overview.
+
     Format: Technical report in markdown
-    Target audience: Radiation safety professionals
-    Style: Professional, clear, technically accurate
-    
+    Target audience: Nuclear industry professionals and technical experts
+    Style: Professional, sophisticated, technically rigorous, narrative-driven
+
     Save the final report to the outputs directory with a descriptive filename
     that includes the date and topic keywords.
   expected_output: >
-    A markdown-formatted report file containing:
-    - Title and metadata (date, topic, system identification)
-    - Executive summary or abstract
-    - Thematic sections with analysis and synthesis
-    - Conclusions and implications
-    - References with complete citations
-    
-    The report should have consistent formatting, proper structure, and be ready
-    for distribution, review, or publication. The file should be saved to the
-    outputs directory.
+    A markdown-formatted report file written entirely in narrative prose,
+    containing title and metadata, executive summary in paragraph form,
+    thematic sections with detailed analysis presented as flowing narrative
+    text, conclusions and implications discussed in substantive paragraphs,
+    and references with complete citations integrated smoothly into the text.
+
+    The report must contain NO bullet points, NO numbered lists, NO em dashes,
+    and NO simplistic formatting. All content should be presented in
+    sophisticated, technically rigorous paragraphs that provide deep contextual
+    analysis. The report should have consistent formatting, proper structure,
+    and be ready for distribution, review, or publication. The file should be
+    saved to the outputs directory.
   agent: report_formatting_agent
   context:
     - content_synthesis
