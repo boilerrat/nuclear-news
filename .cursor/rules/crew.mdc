@@ -1,0 +1,298 @@
+---
+alwaysApply: true
+---
+# Cursor Rules for Nuclear Industry Intelligence System
+
+## Project Overview
+
+This document establishes guidelines for AI-assisted development of the Nuclear Industry Intelligence System, a CrewAI-based multi-agent application designed to aggregate, analyze, and synthesize information from the nuclear industry with a specialized focus on radiation safety and protection. These rules help maintain code quality, ensure consistency with project architecture, and facilitate effective collaboration between human developers and AI coding assistants.
+
+The system employs a multi-agent architecture where specialized AI agents collaborate to discover relevant information, evaluate significance, synthesize insights, and generate comprehensive reports. The implementation follows CrewAI best practices using project-based structure with YAML configuration files for agent and task definitions, sequential process workflow, integration with web search and scraping tools, and markdown-formatted output generation.
+
+## Core Principles
+
+### Domain Awareness
+
+This project operates in the highly specialized domain of radiation safety and nuclear industry. All development decisions must respect the technical nature of the domain and prioritize accuracy and precision in handling domain concepts. When working on this codebase, recognize that the end users are technical professionals (health physicists, radiation safety officers, regulatory personnel) who require accurate, detailed information presented in professional formats.
+
+Code comments and documentation should use correct technical terminology from the radiation protection field. When uncertainty exists about domain concepts, acknowledge the limitation rather than making assumptions about technical requirements or appropriate terminology. The system's value depends on its ability to handle complex technical information reliably, making correctness more important than rapid feature development.
+
+### CrewAI Framework Adherence
+
+The project strictly follows CrewAI framework conventions and best practices. Development should align with the official CrewAI documentation, examples, and recommended patterns. The current version targets CrewAI 0.152.0 or later, and all features should be compatible with this version.
+
+Specifically, maintain the project-based structure with YAML configuration files in the config directory for agents and tasks. Use the @CrewBase decorator pattern for crew definition when implementing the main crew class. Follow sequential process architecture unless explicitly specified otherwise. Implement tools using the BaseTool class with proper type hints and error handling. Use verbose logging to enable debugging and understanding of agent reasoning. Maintain separation between configuration (YAML) and code (Python) to enable rapid iteration without code changes.
+
+When suggesting modifications or new features, ensure compatibility with CrewAI's architecture and idioms. Reference relevant sections of CrewAI documentation when proposing patterns or approaches. Avoid introducing dependencies that conflict with CrewAI's requirements or architecture.
+
+### Code Quality and Maintainability
+
+Code quality standards prioritize maintainability and reliability over clever shortcuts. All code should be clear, well-documented, and testable. This project values code that future maintainers can understand and modify confidently over code that demonstrates advanced Python techniques at the expense of clarity.
+
+Specific expectations include comprehensive docstrings for all classes, functions, and modules using Google-style format; type hints for all function parameters and return values; clear variable and function names that communicate intent; modular design with single-responsibility functions and classes; comprehensive error handling with informative messages; logging at appropriate levels (debug, info, warning, error) to support operations; and testing for all significant functionality with both unit and integration tests.
+
+When refactoring or adding features, preserve or improve code clarity. If a clever optimization reduces readability significantly, document it extensively or consider whether the optimization is truly necessary. Remember that this system processes technical information where errors have consequences, making reliability paramount.
+
+## Development Guidelines
+
+### File Organization and Structure
+
+The project follows a standard structure that must be preserved across all development. The source code resides in the src/nuclear_intelligence/ directory, containing the main crew implementation, custom tools, and utility modules. Configuration files defining agents and tasks are located in src/nuclear_intelligence/config/, maintaining the separation between behavior specification and implementation.
+
+When creating new files, follow naming conventions using lowercase with underscores for Python modules (e.g., custom_search_tool.py), PascalCase for classes (e.g., ResearchAgent, NuclearIntelligenceCrew), and descriptive names that clearly indicate purpose. Place custom tools in the tools directory with one tool per file for clarity and maintainability. Store generated outputs in the designated outputs directory organized by date and topic. Maintain test files in the tests directory mirroring the source structure.
+
+New functionality should integrate into existing structure rather than introducing new organizational patterns. If the existing structure proves inadequate for new requirements, propose structural changes explicitly with clear rationale before implementing them.
+
+### YAML Configuration Management
+
+Agent and task definitions reside in YAML files that serve as the primary configuration mechanism. These files should be treated as code, maintained under version control, and modified with the same care as Python source. The configuration approach enables non-programmers to understand and potentially modify agent behavior, making clarity and documentation in YAML files especially important.
+
+When modifying agents.yaml, ensure each agent includes a clear role statement, specific and measurable goal, detailed backstory that establishes expertise and perspective, tools list with appropriate tool assignments, and verbose setting for debugging visibility. The backstory deserves particular attention as it significantly influences agent behavior by establishing the agent's perspective and decision-making framework.
+
+Task definitions in tasks.yaml should provide detailed descriptions that clearly specify what the agent must accomplish, avoid ambiguity that could lead to divergent interpretations, and establish context using domain terminology appropriately. Expected outputs should be concrete and specific, defining format and structure clearly, establishing quality criteria, and specifying information that must be included. Task dependencies should use the context field to link related tasks and ensure proper information flow through the workflow.
+
+When creating new configurations, validate YAML syntax carefully, test thoroughly with diverse inputs, document configuration decisions and their rationale, and maintain consistency with existing configuration patterns. Avoid embedding logic in YAML that belongs in code; configuration should declare what should happen, not implement how it happens.
+
+### Tool Development
+
+Tools extend agent capabilities by providing access to external services and specialized functionality. Custom tool development should follow clear patterns that ensure reliability and maintainability. All custom tools must inherit from BaseTool, implement the required _run method with proper type hints and error handling, provide clear descriptions that agents can use to understand when and how to use the tool, define structured input schemas using Pydantic models, and return structured outputs that subsequent processing can rely on.
+
+Error handling in tools represents a critical concern because tool failures can cascade through the workflow. Implement try-except blocks around external calls (API requests, web scraping, file operations), return structured error information rather than raising exceptions when possible, log errors with sufficient context for debugging, implement retry logic with exponential backoff for transient failures, and respect rate limits and terms of service for external services.
+
+Tool documentation should explain purpose and use cases clearly, document input parameters with examples, describe output format and structure, note any limitations or constraints, and provide usage examples showing typical invocations. Remember that agents use tool descriptions to decide when to employ tools, making clear documentation essential for correct agent behavior.
+
+### Agent Prompt Engineering
+
+Agent behavior emerges from the interaction of role, goal, and backstory fields in configuration combined with the underlying language model's capabilities. Careful prompt engineering ensures agents perform their designated functions effectively. When crafting or refining agent definitions, recognize that specificity generally produces better results than vagueness. Detailed backstories that establish expertise, experience, and perspective help agents make appropriate decisions in ambiguous situations.
+
+The role should be a concise label that encapsulates the agent's function. The goal should state concrete objectives the agent aims to achieve, using measurable outcomes where possible. The backstory provides the richest opportunity for shaping behavior by establishing domain expertise, defining decision-making principles, providing analogies or frameworks for thinking about problems, and setting expectations for output quality and characteristics.
+
+When agents produce unexpected or undesired outputs, examine the prompt engineering before assuming tool or code issues. Often, refinement of role, goal, or backstory resolves problems more effectively than adding code constraints. Test prompt modifications with diverse scenarios to ensure improvements generalize rather than overfitting to specific cases.
+
+### Testing Strategy
+
+Comprehensive testing ensures system reliability and facilitates confident modification. The testing strategy encompasses multiple levels. Unit tests validate individual components including tool functionality with various inputs, agent instantiation and configuration, utility functions and helpers, and output formatting and file handling. These tests should be fast, independent, and cover both happy paths and error conditions.
+
+Integration tests confirm that components work together correctly by validating workflow execution through all stages, proper data flow between tasks, agent collaboration and task dependencies, and output generation in specified formats. Integration tests may run more slowly and require access to external services or test doubles, but they validate that the system functions as a whole.
+
+Quality tests evaluate output characteristics that define success, including technical accuracy of analysis and synthesis, appropriate depth and comprehensiveness, correct citation and attribution, and suitable formatting and structure. These tests may require human evaluation or sophisticated automated assessment, but they ensure the system delivers value beyond merely executing without errors.
+
+When adding features, include tests that validate the new functionality. When fixing bugs, add regression tests to prevent recurrence. Maintain test coverage above 80% for code modules while recognizing that not all aspects of agent behavior lend themselves to automated testing.
+
+### Error Handling Philosophy
+
+Robust error handling ensures the system degrades gracefully when problems occur rather than failing completely or silently producing incorrect outputs. The error handling philosophy prioritizes informative failure messages that enable diagnosis, graceful degradation preserving partial functionality when possible, and clear distinction between recoverable and fatal errors.
+
+Implement error handling at appropriate levels including tool level for external service failures, file system issues, and malformed inputs; agent level for unexpected tool outputs, reasoning failures, and context window limitations; and workflow level for task execution failures, resource constraints, and coordination issues. Each level should handle what it can and escalate what it cannot, with clear logging at each stage.
+
+Error messages should identify the specific failure point, include relevant context (input parameters, state information), suggest potential remedies where applicable, and avoid exposing sensitive information (API keys, internal paths in production). Logging should capture sufficient information for debugging without overwhelming operators with noise, using appropriate log levels to enable filtering.
+
+When encountering errors during development, resist the temptation to catch and suppress them without proper handling. Silent failures often lead to subtle bugs that are harder to diagnose than explicit errors. If an error truly cannot be handled meaningfully at its point of occurrence, escalate it appropriately rather than hiding it.
+
+## Nuclear Industry Domain Guidelines
+
+### Technical Terminology
+
+The radiation safety and nuclear industry domain employs precise technical terminology that must be used correctly. Key concepts include absorbed dose measured in grays (Gy) or rads, equivalent dose measured in sieverts (Sv) or rem, effective dose also in sieverts or rem, activity measured in becquerels (Bq) or curies (Ci), and exposure measured in coulombs per kilogram (C/kg) or roentgens (R). Understanding the distinctions between these quantities and their appropriate usage contexts matters for processing and presenting information correctly.
+
+Common acronyms in the field include ALARA (As Low As Reasonably Achievable), the guiding principle for radiation protection; HP (Health Physicist), the professional designation; RWP (Radiation Work Permit), documentation for work in radiation areas; and TLD (Thermoluminescent Dosimeter), a common dosimetry device. Organizations relevant to the domain include NRC (Nuclear Regulatory Commission) in the United States, IAEA (International Atomic Energy Agency) internationally, HPS (Health Physics Society), and various national regulatory bodies.
+
+When processing information about radiation measurements, verify that units are stated and conversions are applied correctly. When synthesizing content, maintain precise terminology rather than approximating or simplifying in ways that lose technical accuracy. If uncertain about the correct usage of domain terms, flag the uncertainty rather than guessing.
+
+### Regulatory Context
+
+The nuclear industry operates within strict regulatory frameworks that influence how information is interpreted and applied. Regulatory guidance from organizations like the NRC and IAEA establishes standards and best practices that professionals must follow. Technical literature often discusses requirements, recommendations, or approaches in relation to regulatory standards.
+
+When processing regulatory information, distinguish carefully between requirements (mandatory compliance), guidance (recommended approaches), and best practices (industry standards or suggestions). Note the jurisdiction or authority issuing requirements or guidance, as regulatory frameworks vary by country and facility type. Track effective dates and implementation timelines, as regulatory changes often have transition periods.
+
+Synthesized reports should contextualize technical developments within the regulatory framework when relevant, noting whether new approaches address regulatory requirements, whether they exceed regulatory minimums (ALARA implementation), or whether they might influence future regulatory evolution. This contextual awareness helps users understand the practical significance of developments.
+
+### Source Credibility Assessment
+
+In the technical domain, source credibility matters significantly for determining information reliability. Peer-reviewed journals represent the highest standard, having undergone expert review. Regulatory documents carry authority by definition but may lag current practice. Industry publications vary in rigor, with some comparable to academic journals and others more like news reporting. Conference presentations often represent preliminary findings not yet peer-reviewed.
+
+When implementing or refining the Analysis Agent's evaluation logic, consider source characteristics in assessing credibility including publication reputation and peer review practices, author qualifications and institutional affiliations, methodology transparency and reproducibility, consistency with established knowledge, and presence of conflicts of interest or commercial interests.
+
+The system should elevate high-credibility sources in synthesis while not entirely excluding lower-tier sources that might contain early indicators of developments or provide operational perspectives not captured in academic literature. Clear attribution enables users to judge source credibility themselves when reviewing reports.
+
+## Code Style and Conventions
+
+### Python Style Guidelines
+
+Code should follow PEP 8 style guidelines with some project-specific adaptations. Use four spaces for indentation, never tabs. Limit lines to 100 characters for code and 80 for docstrings and comments, allowing slightly longer lines than PEP 8's 79-character limit for improved readability of modern displays. Use descriptive variable names that communicate purpose even if somewhat longer.
+
+Import organization should place standard library imports first, followed by third-party imports, then local application imports, with blank lines separating groups. Within groups, use alphabetical ordering. Use absolute imports rather than relative imports except within package submodules where relative imports improve clarity.
+
+Class and function definitions should be separated by two blank lines. Methods within classes should be separated by one blank line. Use blank lines sparingly within functions to separate logical sections. Add trailing commas in multi-line data structures to ease future additions and reduce diff noise.
+
+### Documentation Standards
+
+Comprehensive documentation enables maintainability and knowledge transfer. All public modules, classes, and functions require docstrings using Google-style format. Module docstrings should describe the module's purpose, list important classes or functions, note any special considerations or dependencies, and provide usage examples for complex modules.
+
+Class docstrings should explain the class's purpose and role, describe key attributes and their meanings, note any special initialization requirements, and provide usage examples showing instantiation and typical operations. Method and function docstrings should describe what the function does (not how it does it), document parameters including types and constraints, specify return values and types, note any exceptions that may be raised, and include examples for non-obvious usage.
+
+Inline comments should explain why code does something, not what it does (which should be clear from the code itself). Use comments to highlight non-obvious design decisions, document workarounds for limitations or bugs, explain complex algorithms or logic, and note areas requiring future attention or improvement. Avoid commenting obvious code, which adds noise without value.
+
+### Type Hints and Validation
+
+Type hints improve code clarity and enable static analysis tools to catch errors. Use type hints for all function parameters and return values, class attributes (using dataclasses or explicit annotations), and variables where type is not obvious from assignment. Import types from the typing module as needed (List, Dict, Optional, Union, etc.).
+
+For tools and structured data, use Pydantic models to define schemas with validation. Pydantic combines type hints with runtime validation, catching data errors early. Define models for tool inputs specifying required and optional parameters, tool outputs defining expected structure, and configuration objects if complex configuration requires validation beyond YAML parsing.
+
+Type hints should be as specific as practical. Prefer specific types (List[str]) over general ones (List) when possible. Use Optional[Type] rather than Type | None for compatibility with older Python versions if targeting Python 3.9. Use Union sparingly, as large unions may indicate design issues requiring refinement.
+
+### Logging Practices
+
+Comprehensive logging supports debugging, operations, and continuous improvement. The logging module should be configured to output to console during development and to files in production, with appropriate log levels for filtering. Use log levels appropriately: DEBUG for detailed information useful during development but too verbose for production, INFO for general informational messages about system operation, WARNING for issues that don't prevent operation but deserve attention, and ERROR for failures requiring investigation or intervention.
+
+Log messages should be clear and informative, including relevant context (input parameters, state information, identifiers), maintaining consistent formatting across modules, and avoiding sensitive information (API keys, personal data, internal system details in production). Use structured logging (with dictionaries or log message parameters) to facilitate parsing and analysis.
+
+In agent-based systems, logging agent reasoning and decisions provides valuable insight into behavior. Log task assignments and execution, tool invocations and results, decision points and chosen paths, and outputs generated at each stage. This visibility helps understand why particular outputs were produced and facilitates refinement of agent behavior.
+
+## Integration and Dependencies
+
+### API Key Management
+
+The system requires API keys for various services including language models (OpenAI or alternatives), web search (Serper), web scraping services (Firecrawl), and potentially specialized databases or services. API keys must be managed securely, never appearing in source code or configuration files committed to version control.
+
+Use environment variables to provide API keys, defining them in a .env file for local development and through deployment platform mechanisms (secrets management) in production. The .env file must be listed in .gitignore to prevent accidental commits. Use python-dotenv to load environment variables from .env files automatically at application startup.
+
+Code should fail gracefully if required API keys are missing, providing clear error messages indicating which keys need to be configured. Consider implementing validation at startup that checks for required keys and exits with a helpful message if any are absent, preventing obscure failures during operation.
+
+### External Service Integration
+
+Integration with external services requires careful consideration of reliability, error handling, and compliance. When working with APIs, implement retry logic with exponential backoff for transient failures, respect rate limits through throttling or request pacing, handle authentication and authorization properly, and validate responses before processing them.
+
+Monitor API usage to avoid exceeding quotas or budgets, implementing logging of request counts and costs if available. For services with tiered pricing, understand the pricing structure to avoid surprising charges. Some services offer free tiers suitable for development and testing; others require paid accounts from the start.
+
+Cache responses where appropriate to reduce API calls and improve performance. For information that doesn't change frequently (like published articles), caching can significantly reduce costs and latency. Implement cache invalidation strategies appropriate to the data type and update frequency.
+
+### Version Control Practices
+
+The project uses Git for version control with practices that ensure collaboration effectiveness and maintain history quality. Commit frequently with small, focused changes that address specific issues or add discrete functionality. Write clear commit messages explaining what changed and why, following the convention of a short (50 character) summary line followed by a blank line and more detailed explanation if needed.
+
+Branch appropriately for different types of work, using feature branches for new functionality, bugfix branches for addressing issues, and experimental branches for exploring ideas. Merge to main through pull requests that enable review and discussion. Keep main branch stable, with all code on main passing tests and being deployable.
+
+Never commit sensitive information including API keys or credentials, internal documentation not intended for public release, or large binary files without appropriate handling. Use .gitignore to prevent accidental inclusion of such files, listing common patterns like .env for environment configuration, __pycache__/ and *.pyc for Python bytecode, and outputs/ for generated reports (unless explicitly meant to be tracked).
+
+## Collaboration Guidelines
+
+### When to Ask for Clarification
+
+Despite comprehensive documentation and guidelines, ambiguity will inevitably arise. Knowing when to seek clarification rather than making assumptions prevents wasted effort and incorrect implementations. Request clarification when domain concepts or terminology are unfamiliar or uncertain, ensuring correct understanding of radiation safety principles or nuclear industry contexts. Seek guidance when requirements seem contradictory or priorities conflict, when proposed approaches might have significant implications for architecture or future development, when uncertain about CrewAI best practices or capabilities, or when tradeoffs between alternatives are unclear.
+
+Frame clarification requests to facilitate useful responses by stating current understanding and specific uncertainty, proposing potential approaches and their tradeoffs, identifying information needed to make a decision, and noting any time constraints or dependencies. This context helps others provide focused, actionable guidance.
+
+Conversely, avoid requesting clarification for issues that can be resolved through consulting documentation, reviewing existing code patterns, or reasonable interpretation aligned with project principles. The goal is to maintain development momentum while preventing costly mistakes from incorrect assumptions about critical aspects.
+
+### Communication Style
+
+Effective collaboration requires clear communication that balances thoroughness with conciseness. When suggesting changes or implementations, explain the rationale behind proposals clearly, considering alternatives and tradeoffs, noting any assumptions or dependencies, and indicating confidence level in recommendations.
+
+Technical discussions should maintain professional tone focused on issues rather than individuals, use precise terminology appropriately, support assertions with evidence or reasoning, and acknowledge limitations of proposals or knowledge. Recognize that different perspectives and approaches can be valid even when they differ from personal preferences.
+
+Documentation for human readers should be thorough but accessible, defining terms that might be unfamiliar, providing context for design decisions, using examples to clarify abstract concepts, and organizing information logically with clear structure. Remember that documentation serves future maintainers who may have different backgrounds and assumptions than current developers.
+
+### Contribution Process
+
+When contributing code or configuration changes, follow established processes that ensure quality and facilitate collaboration. Before implementing significant changes, discuss approach with stakeholders to validate direction and priorities. For large features, break work into smaller incremental changes that can be reviewed and integrated independently, reducing risk and improving feedback quality.
+
+Write tests for new functionality before marking work complete, ensuring both happy path and error conditions are covered. Update documentation to reflect changes including docstrings, README files, and technical specifications. Run all existing tests to verify changes don't break existing functionality. Review your own code before requesting review from others, catching obvious issues early.
+
+When reviewing others' contributions, provide constructive feedback focused on maintaining code quality and consistency. Look for potential issues with correctness, performance, maintainability, testing coverage, and documentation completeness. Acknowledge good aspects of contributions along with suggestions for improvement. Remember that the goal is improving the codebase and supporting contributors, not demonstrating superiority.
+
+## Specific Scenarios and Patterns
+
+### Adding a New Agent
+
+When adding a new agent to the system, begin by clearly defining the agent's role and unique contribution to the workflow. Consider what specific expertise or capability this agent provides, how it complements existing agents, what inputs it requires and outputs it produces, and how it fits into the sequential workflow. Document these decisions before implementation.
+
+Update agents.yaml with the new agent definition including a clear, concise role statement, a specific goal with measurable outcomes, a detailed backstory establishing expertise and perspective, appropriate tool assignments if the agent requires specialized capabilities, and verbose flag set to true for initial development. Ensure the agent name follows project conventions and clearly indicates purpose.
+
+If the agent requires custom tools, implement them before configuring the agent, following tool development guidelines. Test tools independently before integrating them into agent workflow. Update tasks.yaml to include tasks assigned to the new agent, specifying inputs from previous tasks if needed, outputs for subsequent tasks, and evaluation criteria for success.
+
+Test the agent thoroughly in isolation before integrating it into the full workflow by running it with sample inputs, reviewing outputs for quality and correctness, iterating on configuration based on observed behavior, and ensuring it handles edge cases and errors appropriately. Once satisfied with standalone performance, integrate into the crew and test end-to-end workflow.
+
+### Implementing a Custom Tool
+
+Custom tools extend agent capabilities by providing access to specialized services or functionality. Begin tool development by clearly defining the tool's purpose and interface, considering what specific capability the tool provides, what inputs it requires and their types, what outputs it produces and their structure, what errors it might encounter and how to handle them, and how agents will decide when to use the tool.
+
+Create a new Python file in the tools directory following naming conventions. Implement the tool class inheriting from BaseTool with these components: descriptive name and description for agent reference, Pydantic model defining input schema with validation, _run method implementing core functionality, comprehensive error handling with appropriate error types, logging for debugging and monitoring, and return value matching declared output type.
+
+The tool description merits particular attention as agents rely on it to understand when and how to use the tool. Write descriptions that explain the tool's purpose clearly, specify required inputs and their meanings, describe output format and interpretation, note any limitations or constraints, and provide usage examples in the description if helpful. Descriptions should enable agents to use tools effectively without requiring human intervention to clarify usage.
+
+Test the tool thoroughly before integration by creating unit tests covering typical usage, boundary conditions and edge cases, error scenarios and recovery, and performance with realistic inputs. Document the tool's purpose, usage, limitations, and any configuration requirements. Once testing is complete, add the tool to appropriate agent configurations in agents.yaml.
+
+### Modifying the Workflow
+
+The sequential workflow defines how information flows through the system from discovery to final report. Modifications might add new stages, reorder existing stages, create parallel paths, or introduce conditional execution. Approach workflow modifications systematically to ensure coherent operation.
+
+Begin by documenting the current workflow and its rationale, identifying the specific issue or limitation requiring modification, proposing changes with clear justification, and considering impacts on existing functionality and outputs. Discuss significant workflow changes with stakeholders before implementation to validate that modifications address real needs and don't introduce undesired consequences.
+
+Update tasks.yaml to reflect workflow changes, adding or modifying task definitions, adjusting context dependencies between tasks, ensuring each task has appropriate inputs from previous stages, and validating that the workflow maintains logical coherence. If workflow changes require new agents or tools, implement and test those components before modifying the workflow.
+
+Test workflow changes incrementally, first validating new or modified tasks in isolation, then testing the modified workflow with simple inputs, checking that outputs maintain quality, and finally conducting comprehensive testing across diverse scenarios. Monitor execution logs carefully during initial testing to identify any issues with task coordination or data flow.
+
+### Debugging Agent Behavior
+
+When agents produce unexpected or undesired outputs, systematic debugging identifies the root cause and appropriate remedy. Begin by reproducing the issue consistently, identifying inputs that trigger the problem, noting specific aspects of output that are problematic, checking whether the issue occurs across different topics or is specific to particular inputs, and reviewing execution logs for error messages or warnings.
+
+Examine the agent's configuration in agents.yaml to verify the role accurately describes intended function, the goal specifies concrete, measurable objectives, the backstory provides appropriate context and expertise, and tool assignments include necessary capabilities. Often, unexpected behavior results from insufficient or misleading configuration rather than code defects.
+
+Test the agent in isolation if possible by extracting relevant task definition, running with representative inputs, examining outputs in detail, and iterating on configuration or prompts based on findings. This isolation helps determine whether the issue lies with the agent itself or with interactions in the broader workflow.
+
+If the agent uses custom tools, verify that tools are functioning correctly by testing them independently with various inputs, checking error handling for edge cases, and reviewing logs for tool invocation failures or unexpected outputs. Tool issues often manifest as agent confusion or poor output quality.
+
+Consider language model limitations when debugging, recognizing that even well-configured agents may struggle with particularly complex or ambiguous tasks, that hallucination remains possible despite mitigation efforts, and that output quality varies somewhat even with identical inputs. If agent issues persist despite configuration refinement, evaluation whether the task requires decomposition into smaller subtasks or different tool support.
+
+## Maintenance and Operations
+
+### Monitoring and Logging
+
+Operational visibility depends on comprehensive monitoring and logging that enables understanding of system behavior and rapid identification of issues. Implement logging throughout the application at appropriate levels, ensuring all significant events are captured, errors include sufficient context for diagnosis, and log volume remains manageable.
+
+Monitor key metrics relevant to system health and performance including execution success rate (percentage of runs completing successfully), execution duration (time required for complete workflow), API call counts and failures (for external services), error types and frequencies (to identify patterns), and output quality indicators (if automated assessment is feasible).
+
+Establish alerting for critical issues including complete execution failures, repeated errors from specific components, API quota exhaustion or service unavailability, and significant performance degradation. Alerts should enable rapid response to prevent accumulation of failed reports or extended outages.
+
+Review logs and metrics regularly to identify trends, opportunities for optimization, recurring issues requiring fixes, and patterns suggesting potential problems before they become critical. Proactive monitoring prevents many operational issues and informs continuous improvement efforts.
+
+### Performance Optimization
+
+As the system matures and usage grows, performance optimization may become necessary to maintain acceptable execution times and control costs. Approach optimization systematically, measuring before and after changes to validate improvements. Focus optimization efforts on demonstrable bottlenecks rather than premature optimization of theoretical concerns.
+
+Common optimization opportunities include caching of search results or scraped content to avoid redundant API calls, parallel execution of independent tasks if workflow allows, prompt optimization to reduce token usage while maintaining output quality, and batching of operations to reduce overhead. Measure the impact of optimizations carefully, ensuring they don't degrade output quality or introduce instability.
+
+Monitor costs associated with external service usage including language model API calls (often the largest cost component), search API calls, web scraping services, and compute resources for execution. Implement cost tracking and budgeting to prevent unexpected expenses. Consider using less expensive models for tasks not requiring maximum capability, implementing caching aggressively, and optimizing prompts to reduce token usage.
+
+Balance performance and cost optimization against maintainability and reliability. Elegant, simple implementations that are slightly slower or more expensive may be preferable to complex optimizations that are difficult to understand, modify, or debug. Optimize when necessary, but don't sacrifice code quality for marginal performance gains.
+
+### Updating Dependencies
+
+The system depends on external libraries and services that evolve over time, releasing new versions with enhancements, fixes, and occasionally breaking changes. Dependency management requires balancing the benefits of updates (new features, performance improvements, security fixes) against the risks (breaking changes, new bugs, compatibility issues).
+
+Maintain explicit version specifications in pyproject.toml or requirements.txt to ensure reproducible builds and controlled updates. Use version ranges that allow minor updates while preventing major version changes without explicit validation. For critical dependencies like CrewAI, stay current with releases but test updates carefully before deploying to production.
+
+When updating dependencies, review release notes and changelogs for breaking changes, deprecated features, new capabilities that might benefit the project, and reported issues. Test updated dependencies thoroughly including running full test suite, executing end-to-end workflow with diverse inputs, and reviewing outputs for quality changes. Monitor execution logs for new warnings or errors indicating compatibility issues.
+
+Schedule regular dependency review and update cycles to avoid accumulating technical debt from outdated dependencies. Balance staying current with avoiding unnecessary churn from constant updates. Security updates should be applied promptly, while feature updates can be scheduled based on value and risk assessment.
+
+### Documentation Maintenance
+
+Documentation requires ongoing maintenance to remain accurate and useful as the system evolves. Treat documentation as part of the codebase requiring the same attention as code. Update documentation whenever modifying functionality, adding features, changing architecture or patterns, or identifying inaccuracies or unclear explanations.
+
+Key documentation artifacts requiring maintenance include this Cursor rules document, the technical specification, README files explaining project setup and usage, docstrings for modules, classes, and functions, and inline comments explaining complex logic. Ensure all documentation stays synchronized with code, removing documentation for deprecated features and adding documentation for new capabilities.
+
+Review documentation periodically for accuracy, completeness, clarity, and organization. Consider the needs of different audiences including new developers joining the project, operators deploying and maintaining the system, and users consuming outputs. Each audience requires different information and perspectives.
+
+Document design decisions and their rationale, especially when non-obvious choices were made. This context helps future maintainers understand why the system is structured as it is and avoids repeating past discussions. Include information about alternatives that were considered and rejected, with reasons for those decisions.
+
+## Conclusion
+
+These Cursor rules provide comprehensive guidance for AI-assisted development of the Nuclear Industry Intelligence System, covering project structure and conventions, CrewAI framework integration, domain-specific considerations, code quality standards, and operational practices. Following these guidelines ensures consistency, maintainability, and alignment with project goals as the system evolves.
+
+Successful development requires balancing multiple concerns including technical correctness in the specialized radiation safety domain, adherence to CrewAI framework patterns and best practices, code quality and maintainability for long-term sustainability, operational reliability and performance, and cost-effectiveness within resource constraints. These rules help navigate these considerations systematically.
+
+As the project evolves, these rules should be updated to reflect new patterns, address recurring issues, and incorporate lessons learned from development and operation. The rules serve as living documentation that guides consistent development practices while remaining flexible enough to accommodate changing requirements and improved understanding.
+
+Remember that the ultimate goal is creating a system that delivers genuine value to radiation safety professionals by reliably discovering, analyzing, and synthesizing information from the complex nuclear industry landscape. Technical excellence serves this goal, making careful attention to quality, reliability, and domain accuracy essential throughout development and operation.

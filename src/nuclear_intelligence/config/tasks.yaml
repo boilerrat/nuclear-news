@@ -1,0 +1,144 @@
+information_discovery:
+  description: >
+    Identify and collect recent publications, announcements, and discussions
+    related to {topic} within the nuclear industry and radiation safety domain.
+    Focus on developments from the past {time_window} (typically past week or month).
+    Search across multiple source types including:
+    - Peer-reviewed journal articles (Health Physics, Radiation Protection Dosimetry, etc.)
+    - Regulatory announcements (NRC, IAEA, national regulatory bodies)
+    - Industry publications and news
+    - Conference proceedings and presentations
+    - Technical reports and white papers
+    
+    For each source, extract complete metadata including:
+    - Title and publication source
+    - Publication date
+    - Authors (where available)
+    - Direct URL for verification
+    - Brief summary or abstract
+    
+    Prioritize source diversity to ensure coverage across different publication
+    types and perspectives. Aim for at least 10-15 distinct, high-quality sources.
+    Use domain-specific search terms related to radiation safety, health physics,
+    dosimetry, ALARA, contamination control, and regulatory compliance.
+  expected_output: >
+    A structured list of at least 10-15 distinct sources, each containing:
+    - Complete metadata (title, source, date, authors, URL)
+    - Brief content summary or abstract
+    - Preliminary relevance indicator
+    - Source type classification (journal, regulatory, industry, conference, etc.)
+    
+    The list should demonstrate source diversity and focus on authoritative,
+    credible sources within the radiation safety domain.
+  agent: research_agent
+
+content_analysis:
+  description: >
+    Evaluate each information item discovered in the previous task for relevance,
+    quality, and significance to radiation safety and protection practices.
+    
+    For each item, assess:
+    - Technical merit and methodological soundness
+    - Practical applicability to real-world radiation safety challenges
+    - Regulatory compliance implications
+    - Novelty and significance (major development vs. incremental advance)
+    - Relationship to established practices and knowledge
+    
+    Extract key technical parameters, measurements, or recommendations.
+    Identify any limitations, uncertainties, or controversial aspects.
+    Note connections and relationships between different items.
+    
+    Provide structured assessments that enable effective synthesis in the
+    next stage. Focus on content that offers genuine value to radiation safety
+    professionals.
+  expected_output: >
+    Detailed assessments for each information item, including:
+    - Relevance score (high/medium/low)
+    - Significance rating (major development/incremental advance/background information)
+    - Key findings summary (2-3 sentences capturing essential points)
+    - Technical highlights (specific measurements, methods, recommendations)
+    - Identified limitations or uncertainties
+    - Relationships to other items in the collection
+    
+    Organize assessments to highlight the most significant developments while
+    maintaining awareness of the broader information landscape.
+  agent: analysis_agent
+  context:
+    - information_discovery
+
+content_synthesis:
+  description: >
+    Transform the analyzed information into a coherent narrative that connects
+    individual developments, identifies themes and trends, and provides context
+    for understanding significance within the broader field of radiation safety.
+    
+    Organize content by thematic categories such as:
+    - Technology and instrumentation advances
+    - Regulatory developments and compliance
+    - Best practices and operational improvements
+    - Research findings and scientific advances
+    - Industry trends and market developments
+    
+    Within each theme, present developments chronologically where appropriate.
+    Contextualize developments within regulatory frameworks (NRC, IAEA) and
+    industry practices. Explain technical concepts clearly without oversimplification.
+    Highlight implications for different stakeholder groups (operators, regulators,
+    equipment manufacturers, researchers).
+    
+    Maintain technical accuracy while ensuring accessibility. Use clear headings
+    and transitions to guide navigation. Include appropriate technical detail with
+    explanatory context. Identify gaps in current knowledge or areas requiring
+    further investigation.
+    
+    Target audience: Technical professionals (health physicists, radiation safety
+    officers, regulatory personnel) with expertise in radiation protection.
+  expected_output: >
+    A comprehensive synthesis document organized into thematic sections, including:
+    - Clear introduction establishing context and significance
+    - Thematic sections with detailed discussions of key developments
+    - Connections drawn between related items
+    - Implications identified for different stakeholder groups
+    - Conclusions summarizing the state of the field and highlighting areas of
+      active development
+    
+    The synthesis should maintain technical accuracy while ensuring readability,
+    with citations linking assertions to source materials.
+  agent: synthesis_agent
+  context:
+    - content_analysis
+
+report_generation:
+  description: >
+    Transform the synthesized content into a polished, well-formatted report
+    optimized for distribution. Apply consistent markdown structure with
+    appropriate heading hierarchy. Format citations according to standard
+    practices, ensuring all claims are properly attributed with accessible
+    references for verification.
+    
+    Create clear section breaks and transitions. Ensure appropriate paragraph
+    length and information density. Highlight key findings or recommendations
+    where appropriate. Generate an executive summary or abstract that captures
+    key findings for readers who need a quick overview.
+    
+    Format: Technical report in markdown
+    Target audience: Radiation safety professionals
+    Style: Professional, clear, technically accurate
+    
+    Save the final report to the outputs directory with a descriptive filename
+    that includes the date and topic keywords.
+  expected_output: >
+    A markdown-formatted report file containing:
+    - Title and metadata (date, topic, system identification)
+    - Executive summary or abstract
+    - Thematic sections with analysis and synthesis
+    - Conclusions and implications
+    - References with complete citations
+    
+    The report should have consistent formatting, proper structure, and be ready
+    for distribution, review, or publication. The file should be saved to the
+    outputs directory.
+  agent: report_formatting_agent
+  context:
+    - content_synthesis
+
+
